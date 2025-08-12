@@ -1,0 +1,146 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+<section class="search-section">
+    <div class="container">
+        <h1 style="text-align: center; margin-bottom: 2rem; font-size: 2.5rem; color: #2d3748;">
+            Find Your Perfect Job
+        </h1>
+        <p style="text-align: center; margin-bottom: 2rem; font-size: 1.1rem; color: #666;">
+            Discover thousands of job opportunities from top companies
+        </p>
+        
+        <form class="search-form" onsubmit="event.preventDefault(); searchJobs();">
+            <div class="form-group">
+                <label for="search">Job Title or Keywords</label>
+                <input type="text" id="search" placeholder="e.g., Software Engineer, Product Manager">
+            </div>
+            <div class="form-group">
+                <label for="location">Location</label>
+                <input type="text" id="location" placeholder="e.g., New York, Remote">
+            </div>
+            <div class="form-group">
+                <label for="type">Job Type</label>
+                <select id="type">
+                    <option value="">All Types</option>
+                    <option value="Full-time">Full-time</option>
+                    <option value="Part-time">Part-time</option>
+                    <option value="Contract">Contract</option>
+                    <option value="Internship">Internship</option>
+                </select>
+            </div>
+            <button type="submit" class="search-btn">
+                <i class="fas fa-search"></i> Search Jobs
+            </button>
+        </form>
+    </div>
+</section>
+
+<!-- Google Banner Ad -->
+<div class="container">
+    <div class="google-ad-banner">
+        <div class="ad-label">Advertisement</div>
+        <!-- Google AdSense Banner Ad -->
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-YOUR_PUBLISHER_ID"
+             data-ad-slot="YOUR_AD_SLOT_ID"
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+        <script>
+             (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+    </div>
+</div>
+
+<div class="container">
+    <div class="main-content">
+        <main>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                <h2 style="color: #2d3748; font-size: 1.8rem;">Latest Job Opportunities</h2>
+                <span style="color: #666; font-size: 1rem;">{{ jobs|length }} jobs found</span>
+            </div>
+            
+            <div id="jobs-container">
+                {% for job in jobs %}
+                <div class="job-card" data-job-id="{{ job.id }}">
+                    <div class="job-header">
+                        <div class="job-info">
+                            <h3>{{ job.title }}</h3>
+                            <div class="job-company">{{ job.company }}</div>
+                            <div class="job-location">
+                                <i class="fas fa-map-marker-alt"></i> {{ job.location }}
+                            </div>
+                        </div>
+                        <div class="job-logo">{{ job.logo }}</div>
+                    </div>
+                    <div class="job-details">
+                        <span class="job-tag job-salary">
+                            <i class="fas fa-dollar-sign"></i> {{ job.salary }}
+                        </span>
+                        <span class="job-tag job-type">
+                            <i class="fas fa-clock"></i> {{ job.type }}
+                        </span>
+                        <span class="job-tag job-posted">
+                            <i class="fas fa-calendar"></i> {{ job.posted }}
+                        </span>
+                    </div>
+                    <p style="color: #666; margin-top: 1rem; line-height: 1.5;">
+                        {{ job.description[:150] }}{% if job.description|length > 150 %}...{% endif %}
+                    </p>
+                </div>
+                {% endfor %}
+            </div>
+        </main>
+
+        <aside class="sidebar">
+            <!-- Google Ad in Sidebar -->
+            <div class="google-ad">
+                <div class="ad-label">Advertisement</div>
+                <ins class="adsbygoogle"
+                     style="display:block"
+                     data-ad-client="ca-pub-YOUR_PUBLISHER_ID"
+                     data-ad-slot="YOUR_SIDEBAR_AD_SLOT_ID"
+                     data-ad-format="auto"
+                     data-full-width-responsive="true"></ins>
+                <script>
+                     (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
+            </div>
+
+            <h3 style="color: #2d3748; margin-bottom: 1rem; font-size: 1.3rem;">Featured Sponsors</h3>
+            
+            {% for ad in ads %}
+            <div class="ad-card" style="background: linear-gradient(135deg, 
+                {% if ad.type == 'education' %}#667eea 0%, #764ba2 100%
+                {% elif ad.type == 'tools' %}#f093fb 0%, #f5576c 100%
+                {% else %}#4facfe 0%, #00f2fe 100%{% endif %});">
+                <div class="ad-image">{{ ad.image }}</div>
+                <h4>{{ ad.title }}</h4>
+                <p>{{ ad.description }}</p>
+                <a href="{{ ad.link }}" style="color: white; text-decoration: none; font-weight: 600; margin-top: 1rem; display: inline-block;">
+                    Learn More <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+            {% endfor %}
+
+            <div style="background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08);">
+                <h4 style="color: #2d3748; margin-bottom: 1rem;">Job Statistics</h4>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                    <span>Total Jobs:</span>
+                    <span style="font-weight: 600;">{{ jobs|length }}</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                    <span>Remote Jobs:</span>
+                    <span style="font-weight: 600;">{{ jobs|selectattr("location", "equalto", "Remote")|list|length }}</span>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                    <span>Full-time:</span>
+                    <span style="font-weight: 600;">{{ jobs|selectattr("type", "equalto", "Full-time")|list|length }}</span>
+                </div>
+            </div>
+        </aside>
+    </div>
+</div>
+{% endblock %}
